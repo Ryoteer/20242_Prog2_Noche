@@ -5,10 +5,14 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : MonoBehaviour
 {
-    [Header("<color=green>Inputs</color>")]
+    [Header("<color=#6A89A7>Animation</color>")]
+    [SerializeField] private string _xName = "xAxis";
+    [SerializeField] private string _zName = "zAxis";
+
+    [Header("<color=#6A89A7>Inputs</color>")]
     [SerializeField] private KeyCode _jumpKey = KeyCode.Space;
 
-    [Header("<color=green>Movement</color>")]
+    [Header("<color=#6A89A7>Movement</color>")]
     [SerializeField] private float _jumpForce = 5f;
     [SerializeField] private float _movSpeed = 3.5f;
 
@@ -16,6 +20,7 @@ public class Player : MonoBehaviour
     private float _xAxis = 0f, _zAxis = 0f;
     private Vector3 _dir = new();
 
+    private Animator _anim;
     private Rigidbody _rb;
 
     private void Awake()
@@ -26,10 +31,18 @@ public class Player : MonoBehaviour
         _rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
+    private void Start()
+    {
+        _anim = GetComponentInChildren<Animator>();
+    }
+
     private void Update()
     {
         _xAxis = Input.GetAxis("Horizontal");
         _zAxis = Input.GetAxis("Vertical");
+
+        _anim.SetFloat(_xName, _xAxis);
+        _anim.SetFloat(_zName, _zAxis);
 
         if (Input.GetKeyDown(_jumpKey) && !_isOnAir)
         {
