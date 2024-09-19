@@ -10,14 +10,30 @@ public class Enemy : MonoBehaviour
     [Header("<color=red>AI</color>")]
     [SerializeField] private float _distanceToChange = 0.5f;
 
+    [Header("<color=red>Behaviours</color>")]
+    [SerializeField] private int _maxHP = 100;
+
+    private int _actualHP;
+
     private Transform _actualNode;
     private List<Transform> _navMeshNodes = new();
-    public List<Transform> NavMeshNodes { get { return _navMeshNodes; } set { _navMeshNodes = value; } }
+    public List<Transform> NavMeshNodes 
+    { 
+        get { return _navMeshNodes; } 
+        set { _navMeshNodes = value; } 
+    }
 
     private NavMeshAgent _agent;
 
+    private void Awake()
+    {
+        _actualHP = _maxHP;
+    }
+
     private void Start()
     {
+        GameManager.Instance.Enemies.Add(this);
+
         _agent = GetComponent<NavMeshAgent>();        
     }
 
@@ -51,5 +67,20 @@ public class Enemy : MonoBehaviour
         }
 
         return newNode;
+    }
+
+    public void TakeDamage(int dmg)
+    {
+        _actualHP -= dmg;
+
+        if(_actualHP <= 0)
+        {
+            Debug.Log($"<color=red>{name}</color>: oh no *Explota*");
+            Destroy(gameObject);
+        }
+        else
+        {
+            Debug.Log($"<color=red>{name}</color>: Parate de manos gil.");
+        }
     }
 }

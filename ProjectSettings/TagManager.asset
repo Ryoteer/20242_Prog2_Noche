@@ -34,8 +34,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - Ground
+  - Wall
   - 
   m_SortingLayers:
   - name: Default

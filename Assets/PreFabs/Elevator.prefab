@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5210015138955705964}
   - component: {fileID: 8643944633142091058}
   - component: {fileID: 408398484305289913}
-  m_Layer: 0
+  m_Layer: 30
   m_Name: Back Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   - component: {fileID: 2925486393370257340}
   - component: {fileID: 1085325436961222174}
   - component: {fileID: 7786282502347712910}
-  m_Layer: 0
+  m_Layer: 30
   m_Name: Front Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -499,7 +499,7 @@ GameObject:
   - component: {fileID: 6031818671737470760}
   - component: {fileID: 3538239440290882882}
   - component: {fileID: 9062746716000174534}
-  m_Layer: 0
+  m_Layer: 29
   m_Name: Elevator
   m_TagString: Untagged
   m_Icon: {fileID: 0}

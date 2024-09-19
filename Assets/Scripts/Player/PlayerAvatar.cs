@@ -15,4 +15,9 @@ public class PlayerAvatar : MonoBehaviour
     {
         _parent.Attack();
     }
+
+    public void SpearAttack()
+    {
+        _parent.SpearAttack();
+    }
 }
