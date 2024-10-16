@@ -17,6 +17,11 @@ public class Player : MonoBehaviour
     [Header("<color=#6A89A7>Behaviours</color>")]
     [SerializeField] private int _dmg = 25;
 
+    [Header("<color=#6A89A7>Camera</color>")]
+    [SerializeField] private Transform _camTarget;
+
+    public Transform GetCamTarget { get { return _camTarget; } }
+
     [Header("<color=#6A89A7>Inputs</color>")]
     [SerializeField] private KeyCode _atkKey = KeyCode.Mouse0;
     [SerializeField] private KeyCode _secondAtkKey = KeyCode.Mouse1;
@@ -35,16 +40,20 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask _groundRayMask;
 
     private float _xAxis = 0f, _zAxis = 0f;
-    private Vector3 _dir = new(), _groundOffset = new();
+    private Vector3 _camForwardFix = new(), _camRightFix = new(), _dir = new(), _groundOffset = new();
+    private Vector3 _dirFix = new();
 
     private Animator _anim;
     private Rigidbody _rb;
+    private Transform _camTransform;
 
     private Ray _groundRay, _atkRay, _spearRay;
     private RaycastHit _atkHit;
 
     private void Awake()
     {
+        GameManager.Instance.Player = this;
+
         _rb = GetComponent<Rigidbody>();
         //_rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         //_rb.angularDrag = 1f;
@@ -53,19 +62,19 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Instance.Player = this;
+        _camTransform = Camera.main.transform;
 
         _anim = GetComponentInChildren<Animator>();
     }
 
     private void Update()
     {
-        _xAxis = Input.GetAxis("Horizontal");
-        _zAxis = Input.GetAxis("Vertical");
+        _dir.x = Input.GetAxis("Horizontal");
+        _dir.z = Input.GetAxis("Vertical");
 
-        _anim.SetFloat(_xName, _xAxis);
-        _anim.SetFloat(_zName, _zAxis);
-        _anim.SetBool(_isMovName, _xAxis != 0 || _zAxis != 0);
+        _anim.SetFloat(_xName, _dir.x);
+        _anim.SetFloat(_zName, _dir.z);
+        _anim.SetBool(_isMovName, _dir.sqrMagnitude != 0.0f);
         _anim.SetBool(_isGroundName, IsGrounded());
 
         if (Input.GetKeyDown(_atkKey))
@@ -86,17 +95,38 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(_xAxis != 0 || _zAxis != 0)
+        if(_dir.sqrMagnitude != 0.0f)
         {
-            Movement(_xAxis, _zAxis);
+            Movement(_dir);
         }
     }
 
-    private void Movement(float x, float z)
+    public void Attack()
     {
-        _dir = (transform.right * x + transform.forward * z).normalized;
+        _atkRay = new Ray(_atkOrigin.position, transform.forward);
 
-        _rb.MovePosition(transform.position + _dir * _movSpeed * Time.fixedDeltaTime);
+        if (Physics.Raycast(_atkRay, out _atkHit, _atkRayDist, _atkRayMask))
+        {
+            if (_atkHit.collider.TryGetComponent<Enemy>(out Enemy enemy))
+            {
+                enemy.TakeDamage(_dmg);
+            }
+        }
+    }
+
+    private void Movement(Vector3 dir)
+    {
+        _camForwardFix = _camTransform.forward;
+        _camRightFix = _camTransform.right;
+
+        _camForwardFix.y = 0.0f;
+        _camRightFix.y = 0.0f;
+
+        Rotate(_camForwardFix);
+
+        _dirFix = (_camRightFix * dir.x + _camForwardFix * dir.z).normalized;
+
+        _rb.MovePosition(transform.position + _dirFix * _movSpeed * Time.fixedDeltaTime);
     }
 
     private void Jump()
@@ -104,18 +134,10 @@ public class Player : MonoBehaviour
         _rb.AddForce(transform.up * _jumpForce, ForceMode.Impulse);
     }
 
-    public void Attack()
+    private void Rotate(Vector3 dir)
     {
-        _atkRay = new Ray(_atkOrigin.position, transform.forward);
-
-        if(Physics.Raycast(_atkRay, out _atkHit, _atkRayDist, _atkRayMask))
-        {
-            if(_atkHit.collider.TryGetComponent<Enemy>(out Enemy enemy))
-            {
-                enemy.TakeDamage(_dmg);
-            }
-        }
-    }
+        transform.forward = dir;
+    }    
 
     public void SpearAttack()
     {
