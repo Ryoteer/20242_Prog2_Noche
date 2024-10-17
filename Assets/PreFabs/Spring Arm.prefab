@@ -143,6 +143,6 @@ MonoBehaviour:
   _hitOffset: 0.25
   _mouseSensitivity: 500
   _minDistance: 0.25
-  _maxDistance: 5
+  _maxDistance: 3
   _minRotation: -80
   _maxRotation: 45
