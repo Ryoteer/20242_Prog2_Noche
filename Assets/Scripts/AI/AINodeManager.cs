@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AINodeManager : MonoBehaviour
@@ -14,7 +15,14 @@ public class AINodeManager : MonoBehaviour
         {
             enemy.NavMeshNodes.AddRange(_nodes);
 
-            enemy.InitalizeAgent();
+            if(enemy.NavMeshNodes.Count > 0)
+            {
+                enemy.Initialize();
+            }
+            else
+            {
+                Destroy(enemy.gameObject);
+            }
         }
     }
 }

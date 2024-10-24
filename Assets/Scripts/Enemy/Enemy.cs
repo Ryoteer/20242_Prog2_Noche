@@ -28,18 +28,18 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         _actualHP = _maxHP;
+
+        GameManager.Instance.Enemies.Add(this);
     }
 
     private void Start()
     {
-        GameManager.Instance.Enemies.Add(this);
-
         _agent = GetComponent<NavMeshAgent>();        
     }
 
-    public void InitalizeAgent()
+    public void Initialize()
     {
-        Debug.Log($"<color=red>{name}'s nodes</color>: {_navMeshNodes.Count}.");
+        Debug.Log($"Available nodes (<color=red>{name}</color>): {_navMeshNodes.Count}.");
 
         _actualNode = GetNewNode();
 
@@ -48,6 +48,8 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+        if (!_actualNode) return;
+
         if(Vector3.SqrMagnitude(transform.position - _actualNode.position) <= Mathf.Pow(_distanceToChange, 2))
         {
             _actualNode = GetNewNode();
