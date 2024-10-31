@@ -67,6 +67,8 @@ public class LoadingManager : MonoBehaviour
     {
         _isLoading = true;
 
+        _bgImage.enabled = true;
+
         float t = 0.0f;
 
         while(t < 1.0f)
@@ -89,6 +91,7 @@ public class LoadingManager : MonoBehaviour
         }
 
         _loadBarBG.enabled = false;
+        _loadBarImage.enabled = false;
 
         _doneText.text = $"Press any button.";
 
@@ -109,6 +112,8 @@ public class LoadingManager : MonoBehaviour
             _bgImage.color = new Color(_bgColor.r, _bgColor.g, _bgColor.b, Mathf.Lerp(1.0f, 0.0f, t));
             yield return null;
         }
+
+        _bgImage.enabled = false;
 
         _isLoading = false;
     }
