@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
     [SerializeField] private KeyCode _atkKey = KeyCode.Mouse0;
     [SerializeField] private KeyCode _secondAtkKey = KeyCode.Mouse1;
     [SerializeField] private KeyCode _jumpKey = KeyCode.Space;
+    [SerializeField] private KeyCode _menuKey = KeyCode.Escape;
 
     [Header("<color=#6A89A7>Movement</color>")]
     [SerializeField] private float _jumpForce = 5f;
@@ -90,6 +91,11 @@ public class Player : MonoBehaviour
         {
             _anim.SetTrigger(_onJumpName);
             Jump();
+        }
+
+        if (Input.GetKeyDown(_menuKey))
+        {
+            LoadingManager.Instance.LoadSceneAsync("MainMenu");
         }
     }
 
